@@ -19,7 +19,7 @@ import { useAppContext } from "../../Context/AppContext";
 
 const LiveRates = () => {
   const { favouriteMandi, setFavouriteMandi, updateMandi } = useAppContext();
-  const [selectedState, setSelectedState] = useState("All"); // Default to 'All'
+  const [selectedState, setSelectedState] = useState("All"); 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [marketRates, setMarketRates] = useState([]);
@@ -33,7 +33,7 @@ const LiveRates = () => {
     try {
       const response = await axios.get(`${Base_url}api/mandi_rates/all-data`);
       const allData = response.data;
-
+          
       const latestData = Object.values(
         allData.reduce((acc, curr) => {
           const mandi = curr.mandi;
@@ -94,7 +94,7 @@ const LiveRates = () => {
     try {
       const response = await axios.get(`${Base_url}api/b2b/${userId}/mandis`);
       const favoriteMandis = response.data.favoriteMandis || [];
-      setIsEmpty(favoriteMandis.length === 0); // Check if the data is empty
+      setIsEmpty(favoriteMandis.length === 0); 
       return favoriteMandis;
     } catch (error) {
       console.error("Error getting user Mandis:", error);
@@ -104,10 +104,12 @@ const LiveRates = () => {
 
   const userDetailsFromStorage = async () => {
     try {
-      const Details = (await AsyncStorage.getItem("userDetails")) || null;
+      const Details = (await AsyncStorage.getItem("userDetails"));
       const ParseData = JSON.parse(Details);
-      const data = ParseData;
-      setUserId(data._id);
+      if (ParseData) {
+        const data = ParseData;
+        setUserId(data._id);
+      }
     } catch (err) {
       console.log("Error in getting user ==.", err);
     }
@@ -118,22 +120,22 @@ const LiveRates = () => {
   }, []);
 
   useEffect(() => {
+    getAllData();
     if (userId) {
-      getAllData();
       getUserMandis(userId).then(setFavoriteMandis);
     }
   }, [userId, updateMandi]);
 
-  // Add 'All' to the states array
+ 
   const states = [
     "All",
-    "Favourite",
+    ...(userId ? ["Favourite"] : []),
     ...new Set(
       marketRates.map((item) => item.mandi?.state).filter((state) => state)
     ),
   ];
 
-  // Adjust the filtering logic to show all data when 'All' is selected
+  
   const filteredData =
     selectedState === "All"
       ? marketRates

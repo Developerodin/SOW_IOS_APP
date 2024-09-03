@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [userDetails,setuserDetails] = useState({})
+  const [userDetails,setuserDetails] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTabs,setSelectedTabs]=useState("Home");
@@ -20,6 +20,7 @@ export const AppProvider = ({ children }) => {
   const [SelectedAddressFromMap,setSelectedAddressFromMap] = useState({});
   const [favouriteMandi, setFavouriteMandi] = useState(null); 
   const [updateMandi,setUpdateMandi] = useState(0);
+  const [Auth, setAuth]=useState(null);
   const toggleDrwerMenu = () => {
     setDrawerMenuVisible(!isDrwerMenuVisible);
   };
@@ -27,6 +28,24 @@ export const AppProvider = ({ children }) => {
   const toggleLogin = () => {
     setIsLoggedIn(!isLoggedIn);
   };
+
+  useEffect(()=>{
+    const checkAuthAndFirstLaunch = async () => {
+       try {
+         // Check authentication status
+         const authStatus = await AsyncStorage.getItem('Auth') || null;
+         setAuth(authStatus);
+ 
+          
+         
+       } catch (err) {
+         console.log('Error while checking Auth and First Launch:', err);
+       }
+     };
+ 
+     checkAuthAndFirstLaunch();
+   },[])
+
 
   const checklogin=async()=>{
     const isLoggedIn = await AsyncStorage.getItem('Auth');
@@ -115,7 +134,7 @@ setShowCartSuggestion(true)
 //   },[selectedTabs])
 
   return (
-    <AppContext.Provider value={{updateMandi,setUpdateMandi,userDetails,setuserDetails,SelectedAddressFromMap,setSelectedAddressFromMap,CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion,Cart,setCart,update,setUpdate,toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible ,selectedMarker, setSelectedMarker,isMarkerModalVisible, setMarkerModalVisible,selectedTabs,setSelectedTabs, isLoggedIn, toggleLogin,modalVisible,setModalVisible,isLoggedIn,setIsLoggedIn,favouriteMandi,setFavouriteMandi }}>
+    <AppContext.Provider value={{Auth, setAuth,updateMandi,setUpdateMandi,userDetails,setuserDetails,SelectedAddressFromMap,setSelectedAddressFromMap,CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion,Cart,setCart,update,setUpdate,toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible ,selectedMarker, setSelectedMarker,isMarkerModalVisible, setMarkerModalVisible,selectedTabs,setSelectedTabs, isLoggedIn, toggleLogin,modalVisible,setModalVisible,isLoggedIn,setIsLoggedIn,favouriteMandi,setFavouriteMandi }}>
       {children}
     </AppContext.Provider>
   );

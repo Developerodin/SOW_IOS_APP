@@ -56,6 +56,7 @@ const Tab = createBottomTabNavigator();
 
 const Tabs = ({navigation}) => {
   const {userDetails} = useAppContext()
+  // const userDetails = false;
   const [Auth, setAuth]=useState(null);
   useEffect(()=>{
     const checkAuthAndFirstLaunch = async () => {

@@ -118,7 +118,7 @@ export const Profile = () => {
   // navigation.navigate("Login")
   navigation.reset({
     index: 0,
-    routes: [{ name: 'Login' }],
+    routes: [{ name: 'Home' }],
   });
   }
 
