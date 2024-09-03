@@ -48,14 +48,37 @@ import { WebViewApp } from './Pages/WebViewPage/WebView';
 import { KYC } from './Pages/Profile/ProfileTabs/Kyc';
 import { LiveRating } from './Pages/LiveRating/LiveRating';
 import { DailyRates } from './Pages/LiveRating/DailyRates';
-import LiveRatestwo from './Components/Cards/LiveRatestwo';
 import * as Notifications from 'expo-notifications';
 import usePushNotifications from './usePushNotifications';
+import LiveRatestwo from './Components/Cards/LiveRatestwo';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const Tabs = ({navigation}) => {
   const {userDetails} = useAppContext()
+  const [Auth, setAuth]=useState(null);
+  useEffect(()=>{
+    const checkAuthAndFirstLaunch = async () => {
+       try {
+         // Check authentication status
+         const authStatus = await AsyncStorage.getItem('Auth') || null;
+         setAuth(authStatus === 'true');
+ 
+         // Check if app is launched for the first time
+         const appData = await AsyncStorage.getItem('isAppFirstLaunched') || null;
+         if (appData === null) {
+           setIsAppFirstLaunched(true);
+           await AsyncStorage.setItem('isAppFirstLaunched', 'false');
+         } else {
+           setIsAppFirstLaunched(false);
+         }
+       } catch (err) {
+         console.log('Error while checking Auth and First Launch:', err);
+       }
+     };
+ 
+     checkAuthAndFirstLaunch();
+   },[])
   return (
  
 <Tab.Navigator
@@ -81,10 +104,10 @@ const Tabs = ({navigation}) => {
      
       />
       {
-        (userDetails.registerAs !== "Collectors" || userDetails.registerAs !== "Factory") && 
+        (userDetails && userDetails.registerAs !== "Collectors" || userDetails && userDetails.registerAs !== "Factory") && 
         <Tab.Screen
         name="Trading"
-        component={Market}
+        component={userDetails ? Market : Login}
         options={{
           tabBarIcon: ({ color, size }) => (
           
@@ -98,9 +121,9 @@ const Tabs = ({navigation}) => {
       }
       
      {
-            userDetails.registerAs !== "Collectors"  && <Tab.Screen
+            userDetails && userDetails.registerAs !== "Collectors"  && <Tab.Screen
             name="My Rates"
-            component={MyRates}
+            component={userDetails ? MyRates : Login}
             options={{
               tabBarIcon: ({ color, size }) => (
                
@@ -116,25 +139,9 @@ const Tabs = ({navigation}) => {
 
       
 
-
-
-{/* <Tab.Screen
-        name="Schedule"
-        component={Schedule}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <Feather name="file-text" size={size} color={color} />
-          ),
-          
-          headerShown: false,
-        }}
-      
-       
-      /> */}
 <Tab.Screen
         name="Orders"
-        component={Orders}
+        component={ userDetails ? Orders : Login}
         options={{
           tabBarIcon: ({ color, size }) => (
             // <FontAwesome name="bookmark" size={size} color={color} />
@@ -147,7 +154,7 @@ const Tabs = ({navigation}) => {
       />
        <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={userDetails ? Profile : Login}
         options={{
           tabBarIcon: ({ color, size }) => (
             // <FontAwesome name="bookmark" size={size} color={color} />
@@ -158,79 +165,8 @@ const Tabs = ({navigation}) => {
       
        
       />
-{/* <Tab.Screen
-        name="Inventory"
-        component={Inventory}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            
-            <Octicons name="checklist" size={size} color={color} />
-          ),
-          headerShown: false,
-        }}
-       
-       
-      /> */}
 
 
-
-{/* <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <FontAwesome name="user" size={size} color={color} />
-          ),
-         
-        }}
-        listeners={{
-          tabPress: (e) => {
-            handleTabPress(e,'Saved');
-          },
-        }}
-       
-      /> */}
-      {/* <Tab.Screen
-        name="Trips"
-        component={Profile }
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="line-graph" size={size} color={color} />
-          ),
-          
-        }}
-        listeners={{
-          tabPress: (e) => {
-            // e.preventDefault();
-            handleTabPress(e,'Trips');
-          },
-        }}
-        
-       
-      /> */}
-       {/* <Tab.Screen
-        name="Wallet"
-        component={ Market}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-wallet" size={size} color={color} />
-          ),
-         
-        }}
-
-        listeners={{
-          tabPress: (e) => {
-            // e.preventDefault();
-            handleTabPress(e,'Wallet');
-          },
-        }}
-        
-
-       
-       
-      />  */}
       
     </Tab.Navigator>
 
@@ -313,7 +249,7 @@ export default function App() {
 <NavigationContainer onLayout={onLayoutRootView} >
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
-         <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' : Auth ? 'Tabs' : 'Login'}>
+         <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' :'Tabs'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -350,7 +286,7 @@ export default function App() {
           options={{
             headerShown: true,
           }}
-        />        
+        />         
 
 <Stack.Screen name="Daily Rates" component={DailyRates}
           options={{

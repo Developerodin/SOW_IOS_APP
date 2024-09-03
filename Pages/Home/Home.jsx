@@ -96,19 +96,28 @@ export const Home = () => {
     setmarketRateLength(2)
   }
   const handelSellScrap = ()=>{
-    navigation.navigate("Trading")
+    if(userDetails !== null ){
+      navigation.navigate("Trading")
+    }
+    
   }
 
   const handelDailyRates = ()=>{
+    if(userDetails !== null ){
     navigation.navigate("Daily Rates")
+    }
   }
 
   const handelCategoryPress= (categorie)=>{
+    if(userDetails !== null){
     navigation.navigate("Live Market Rates", { value: categorie })
+    }
   }
 
   const handelRatePress= ()=>{
+    if(userDetails !== null){
     navigation.navigate("Live Rates")
+    }
   }
 
   const fetchMarketRates = async () => {
@@ -125,7 +134,7 @@ export const Home = () => {
     const date = new Date(dateString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
-    const year = date.getFullYear() % 100; // Get last two digits of the year
+    const year = date.getFullYear() % 100; 
   
     // Add leading zeros if needed
     const formattedDay = day < 10 ? `0${day}` : day;
