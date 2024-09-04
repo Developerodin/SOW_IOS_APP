@@ -18,7 +18,7 @@ import { useAppContext } from "../../Context/AppContext";
 
 
 const LiveRates = () => {
-  const { favouriteMandi, setFavouriteMandi, updateMandi } = useAppContext();
+  const { favouriteMandi, setFavouriteMandi, updateMandi,userDetails } = useAppContext();
   const [selectedState, setSelectedState] = useState("All"); 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -26,8 +26,11 @@ const LiveRates = () => {
   const [favoriteMandis, setFavoriteMandis] = useState([]);
   const [visibleItems, setVisibleItems] = useState(4);
   const [priceDifferences, setPriceDifferences] = useState({});
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [isEmpty, setIsEmpty] = useState(false);
+
+  const userId = userDetails?._id;
+  // console.log("user id",userId);
 
   const getAllData = async () => {
     try {
@@ -102,22 +105,22 @@ const LiveRates = () => {
     }
   };
 
-  const userDetailsFromStorage = async () => {
-    try {
-      const Details = (await AsyncStorage.getItem("userDetails"));
-      const ParseData = JSON.parse(Details);
-      if (ParseData) {
-        const data = ParseData;
-        setUserId(data._id);
-      }
-    } catch (err) {
-      console.log("Error in getting user ==.", err);
-    }
-  };
+  // const userDetailsFromStorage = async () => {
+  //   try {
+  //     const Details = (await AsyncStorage.getItem("userDetails"));
+  //     const ParseData = JSON.parse(Details);
+  //     if (ParseData) {
+  //       const data = ParseData;
+  //       setUserId(data._id);
+  //     }
+  //   } catch (err) {
+  //     console.log("Error in getting user ==.", err);
+  //   }
+  // };
 
-  useEffect(() => {
-    userDetailsFromStorage();
-  }, []);
+  // useEffect(() => {
+  //   userDetailsFromStorage();
+  // }, []);
 
   useEffect(() => {
     getAllData();

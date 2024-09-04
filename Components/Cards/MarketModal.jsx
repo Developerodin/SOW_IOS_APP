@@ -26,16 +26,18 @@ const MarketModal = ({
   formatTime,
   onClose,
 }) => {
-  const { favouriteMandi, setFavouriteMandi, updateMandi, setUpdateMandi } =
+  const { favouriteMandi, setFavouriteMandi, updateMandi, setUpdateMandi,userDetails } =
     useAppContext();
   const [priceHistory, setPriceHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeButton, setActiveButton] = useState(0);
   const [timeframe, setTimeframe] = useState("today");
   const [noData, setNoData] = useState(false);
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [notificationAdded, setNotificationAdded] = useState([]);
   const [favouriteAdded, setFavouriteAdded] = useState([]);
+
+  const userId = userDetails?._id;
 
   const getHistoryByTimeframe = async (mandiId, category, timeframe) => {
     try {
@@ -286,26 +288,26 @@ const MarketModal = ({
     }
   };
 
-  const userDetailsFromStorage = async (token) => {
-    try {
-      const Details = (await AsyncStorage.getItem("userDetails")) || null;
+  // const userDetailsFromStorage = async (token) => {
+  //   try {
+  //     const Details = (await AsyncStorage.getItem("userDetails")) || null;
 
-      const ParseData = JSON.parse(Details);
+  //     const ParseData = JSON.parse(Details);
 
-      const data = ParseData;
-      console.log("User Data 2 ==>", data);
-      setUserId(ParseData._id);
-      console.log("User ID ==>", userId);
+  //     const data = ParseData;
+  //     console.log("User Data 2 ==>", data);
+  //     setUserId(ParseData._id);
+  //     console.log("User ID ==>", userId);
 
-      return;
-    } catch (err) {
-      console.log("Error in getting user ==.", err);
-    }
-  };
+  //     return;
+  //   } catch (err) {
+  //     console.log("Error in getting user ==.", err);
+  //   }
+  // };
 
-  useEffect(() => {
-    userDetailsFromStorage();
-  }, []);
+  // useEffect(() => {
+  //   userDetailsFromStorage();
+  // }, []);
 
   const calculatePriceStatistics = () => {
     const prices = priceHistory.map((entry) => entry.price);
