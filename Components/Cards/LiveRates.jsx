@@ -18,7 +18,7 @@ import { useAppContext } from "../../Context/AppContext";
 
 
 const LiveRates = () => {
-  const { favouriteMandi, setFavouriteMandi, updateMandi,userDetails } = useAppContext();
+  const { favouriteMandi, setFavouriteMandi, updateMandi,userDetails,update } = useAppContext();
   const [selectedState, setSelectedState] = useState("All"); 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -127,7 +127,7 @@ const LiveRates = () => {
     if (userId) {
       getUserMandis(userId).then(setFavoriteMandis);
     }
-  }, [userId, updateMandi]);
+  }, [userId, updateMandi,update]);
 
  
   const states = [

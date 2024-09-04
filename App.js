@@ -55,7 +55,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const Tabs = ({navigation}) => {
-  const {userDetails} = useAppContext()
+  const {userDetails,update} = useAppContext()
   // const userDetails = false;
   const [Auth, setAuth]=useState(null);
   useEffect(()=>{
@@ -79,7 +79,7 @@ const Tabs = ({navigation}) => {
      };
  
      checkAuthAndFirstLaunch();
-   },[])
+   },[update])
   return (
  
 <Tab.Navigator
@@ -183,6 +183,7 @@ Notifications.setNotificationHandler({
   }),
 });
 export default function App() {
+
   const { expoPushToken, notification } = usePushNotifications();
   const data = JSON.stringify(notification, undefined, 2);
   const [Auth, setAuth]=useState(null);

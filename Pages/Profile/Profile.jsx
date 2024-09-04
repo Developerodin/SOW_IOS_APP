@@ -18,12 +18,13 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useAppContext } from '../../Context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Updates from 'expo-updates';
 export const Profile = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [visible, setVisible] = useState(false);
   const [userDetails,setuserDetails] = useState({})
-  const {CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion} = useAppContext()
+  const {CartInStorage,setUpdate,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion} = useAppContext()
   const ProfileTabs=[
     
     // {icon:<FontAwesome name="address-book" size={24} color="#2dd36f" />,title:"Manage Address",link:"Address",color:"dark"},
@@ -115,11 +116,13 @@ export const Profile = () => {
   } catch (error) {
     console.error('Error clearing AsyncStorage:', error);
   }
-  // navigation.navigate("Login")
+  setUpdate((prev)=>prev+1)
+  navigation.navigate("Home")
   navigation.reset({
     index: 0,
     routes: [{ name: 'Home' }],
   });
+  await Updates.reloadAsync();
   }
 
   const handelRateAppliction=()=>{
